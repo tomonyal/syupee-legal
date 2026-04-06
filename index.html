@@ -3,100 +3,285 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>特定商取引法に基づく表記 - シュッピー</title>
+  <title>シュッピー - AI家計簿アプリ｜撮るだけ節約相談</title>
+  <meta name="description" content="レシートを撮るだけでAIが家計を分析。シュッピーはプライバシーを守りながら節約をサポートするAI家計簿アプリです。">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif; line-height: 1.8; color: #333; background: #fafafa; }
-    .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
-    h1 { font-size: 1.5rem; margin-bottom: 8px; color: #222; }
-    .subtitle { font-size: 0.9rem; color: #666; margin-bottom: 32px; }
-    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.95rem; }
-    th { width: 160px; background: #f8f8f8; font-weight: 600; color: #444; vertical-align: top; white-space: nowrap; }
-    tr:last-child th, tr:last-child td { border-bottom: none; }
+
+    /* ヘッダー */
+    .header { background: linear-gradient(135deg, #F5A623, #F7C948); padding: 60px 20px; text-align: center; color: #fff; }
+    .header-logo { font-size: 3rem; margin-bottom: 8px; }
+    .header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
+    .header-tagline { font-size: 1.1rem; opacity: 0.95; margin-bottom: 24px; }
+    .header-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .badge { background: rgba(255,255,255,0.25); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; backdrop-filter: blur(4px); }
+
+    /* ナビ */
+    .nav { background: #fff; border-bottom: 1px solid #eee; padding: 12px 20px; text-align: center; position: sticky; top: 0; z-index: 10; }
+    .nav a { color: #666; text-decoration: none; margin: 0 16px; font-size: 0.9rem; font-weight: 500; }
+    .nav a:hover { color: #F5A623; }
+
+    /* コンテナ */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+    /* セクション共通 */
+    .section { padding: 56px 0; }
+    .section:nth-child(even) { background: #fff; }
+    .section-title { font-size: 1.4rem; font-weight: 700; text-align: center; margin-bottom: 32px; color: #222; }
+
+    /* 機能カード */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .feature-card { background: #fff; border-radius: 12px; padding: 28px 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .section:nth-child(even) .feature-card { background: #fafafa; }
+    .feature-icon { font-size: 2.2rem; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: #333; }
+    .feature-card p { font-size: 0.88rem; color: #666; }
+
+    /* プラン */
+    .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .plan-card { background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 24px 16px; text-align: center; transition: border-color 0.2s; }
+    .plan-card.popular { border-color: #F5A623; position: relative; }
+    .plan-card.popular::before { content: "人気"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #F5A623; color: #fff; font-size: 0.75rem; padding: 2px 12px; border-radius: 10px; }
+    .plan-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .plan-price { font-size: 1.6rem; font-weight: 800; color: #F5A623; }
+    .plan-price span { font-size: 0.85rem; font-weight: 400; color: #999; }
+    .plan-features { list-style: none; margin-top: 12px; font-size: 0.85rem; color: #555; }
+    .plan-features li { padding: 4px 0; }
+    .plan-features li::before { content: "✓ "; color: #F5A623; font-weight: 700; }
+
+    /* テーブル（特商法） */
+    .legal-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .legal-table th, .legal-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+    .legal-table th { width: 160px; background: #f8f8f8; font-weight: 600; color: #444; vertical-align: top; white-space: nowrap; }
+    .legal-table tr:last-child th, .legal-table tr:last-child td { border-bottom: none; }
+
     a { color: #F5A623; }
-    footer { margin-top: 40px; text-align: center; font-size: 0.8rem; color: #999; }
-    @media (max-width: 600px) { th { width: auto; display: block; padding-bottom: 4px; } td { display: block; padding-top: 0; } }
+
+    /* CTA */
+    .cta { text-align: center; padding: 48px 20px; }
+    .cta-button { display: inline-block; background: #333; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 12px; font-size: 1rem; font-weight: 600; }
+    .cta-button:hover { background: #111; }
+    .cta-sub { margin-top: 10px; font-size: 0.85rem; color: #999; }
+
+    /* フッター */
+    footer { background: #333; color: #aaa; padding: 32px 20px; text-align: center; font-size: 0.8rem; }
+    footer a { color: #ccc; }
+    .footer-links { margin-bottom: 12px; }
+    .footer-links a { margin: 0 12px; }
+
+    @media (max-width: 600px) {
+      .header h1 { font-size: 1.4rem; }
+      .legal-table th { width: auto; display: block; padding-bottom: 4px; }
+      .legal-table td { display: block; padding-top: 0; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>特定商取引法に基づく表記</h1>
-    <p class="subtitle">通信販売に関する表示事項</p>
 
-    <table>
-      <tr>
-        <th>販売事業者名</th>
-        <td>tomonary</td>
-      </tr>
-      <tr>
-        <th>運営責任者</th>
-        <td>齋藤 朋也</td>
-      </tr>
-      <tr>
-        <th>所在地</th>
-        <td>請求があった場合は遅滞なく開示いたします</td>
-      </tr>
-      <tr>
-        <th>電話番号</th>
-        <td>請求があった場合は遅滞なく開示いたします</td>
-      </tr>
-      <tr>
-        <th>メールアドレス</th>
-        <td><a href="mailto:tomonyal1224@gmail.com">tomonyal1224@gmail.com</a></td>
-      </tr>
-      <tr>
-        <th>販売価格</th>
-        <td>
-          【サブスクリプション（月額・税込）】<br>
-          ・ライトプラン：300円/月<br>
-          ・スタンダードプラン：600円/月<br>
-          ・プレミアムプラン：1,200円/月<br><br>
-          【コイン（都度購入・税込）】<br>
-          ・50枚：120円<br>
-          ・100枚：200円<br>
-          ・300枚：500円<br>
-          ・500枚：700円<br>
-          ・1,000枚：1,200円
-        </td>
-      </tr>
-      <tr>
-        <th>商品代金以外の<br>必要料金</th>
-        <td>なし（追加手数料はかかりません。ただし、インターネット接続に必要な通信料はお客様のご負担となります。）</td>
-      </tr>
-      <tr>
-        <th>お支払い方法</th>
-        <td>クレジットカード（Visa、Mastercard、JCB、American Express）</td>
-      </tr>
-      <tr>
-        <th>お支払い時期</th>
-        <td>
-          【サブスクリプション】契約開始時に初回決済、以降毎月自動決済<br>
-          【コイン購入】購入手続き完了時に即時決済
-        </td>
-      </tr>
-      <tr>
-        <th>商品の引渡し時期</th>
-        <td>決済完了後、ただちにアプリ内でご利用いただけます。</td>
-      </tr>
-      <tr>
-        <th>返品・交換・<br>キャンセル</th>
-        <td>
-          デジタルコンテンツの性質上、購入後の返品・返金は原則としてお受けしておりません。<br><br>
-          【サブスクリプション】いつでもアプリ内の設定画面から解約が可能です。解約後は現在の請求期間の終了までサービスをご利用いただけます。日割り返金は行いません。<br><br>
-          【コイン購入】購入後の返金はいたしかねます。<br><br>
-          サービスの不具合等により利用できなかった場合は、メールにてご連絡ください。個別に対応いたします。
-        </td>
-      </tr>
-      <tr>
-        <th>動作環境</th>
-        <td>iOS 16.0 以降を搭載した iPhone</td>
-      </tr>
-    </table>
-
-    <footer>
-      <p>&copy; 2026 シュッピー - AI家計簿アプリ</p>
-    </footer>
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="header-logo">🐣</div>
+    <h1>シュッピー</h1>
+    <p class="header-tagline">撮るだけで節約相談！AI家計簿アプリ</p>
+    <div class="header-badges">
+      <span class="badge">📸 レシート撮影</span>
+      <span class="badge">🤖 AI家計相談</span>
+      <span class="badge">🔒 プライバシー重視</span>
+    </div>
   </div>
+
+  <!-- ナビ -->
+  <div class="nav">
+    <a href="#features">機能</a>
+    <a href="#plans">料金</a>
+    <a href="#legal">特定商取引法</a>
+    <a href="mailto:tomonyal1224@gmail.com">お問い合わせ</a>
+  </div>
+
+  <!-- 機能紹介 -->
+  <div class="section" id="features">
+    <div class="container">
+      <h2 class="section-title">シュッピーの特長</h2>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">📸</div>
+          <h3>レシート撮影で自動記録</h3>
+          <p>レシートをカメラで撮るだけでAIが金額・店名・品目を自動読み取り。手入力の手間がありません。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🐣</div>
+          <h3>AIが節約をアドバイス</h3>
+          <p>あなたの支出パターンをAIが分析。毎日のアドバイスやチャットで気軽に節約相談ができます。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>カテゴリ別に支出を分析</h3>
+          <p>食費・日用品・交通費など11カテゴリで自動分類。円グラフで支出バランスが一目瞭然。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3>予算管理もおまかせ</h3>
+          <p>月の予算を設定すれば、使いすぎを自動で通知。AIが予算配分も提案してくれます。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>プライバシーを守る設計</h3>
+          <p>支出データは端末に保存。あなたの家計情報が外部に漏れることはありません。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h3>CSVエクスポート</h3>
+          <p>支出データをCSVファイルで出力・取り込み可能。Excelや他の家計簿アプリとも連携できます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 料金プラン -->
+  <div class="section" id="plans">
+    <div class="container">
+      <h2 class="section-title">料金プラン</h2>
+      <div class="plans">
+        <div class="plan-card">
+          <div class="plan-name">フリー</div>
+          <div class="plan-price">¥0<span>/月</span></div>
+          <ul class="plan-features">
+            <li>手動入力で支出管理</li>
+            <li>カテゴリ別分析</li>
+            <li>予算設定</li>
+            <li>CSVエクスポート</li>
+          </ul>
+        </div>
+        <div class="plan-card">
+          <div class="plan-name">ライト</div>
+          <div class="plan-price">¥300<span>/月</span></div>
+          <ul class="plan-features">
+            <li>レシート撮影 30回/月</li>
+            <li>AI家計相談 10回/月</li>
+            <li>毎日のAIアドバイス</li>
+            <li>お問い合わせ対応</li>
+          </ul>
+        </div>
+        <div class="plan-card popular">
+          <div class="plan-name">スタンダード</div>
+          <div class="plan-price">¥600<span>/月</span></div>
+          <ul class="plan-features">
+            <li>レシート撮影 100回/月</li>
+            <li>AI家計相談 50回/月</li>
+            <li>毎日のAIアドバイス</li>
+            <li>お問い合わせ対応</li>
+          </ul>
+        </div>
+        <div class="plan-card">
+          <div class="plan-name">プレミアム</div>
+          <div class="plan-price">¥1,200<span>/月</span></div>
+          <ul class="plan-features">
+            <li>レシート撮影 300回/月</li>
+            <li>AI家計相談 500回/月</li>
+            <li>毎日のAIアドバイス</li>
+            <li>お問い合わせ対応</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Store CTA -->
+  <div class="cta">
+    <a class="cta-button" href="https://apps.apple.com/app/id6759599153">App Store でダウンロード</a>
+    <p class="cta-sub">iOS 16.0 以降対応・無料</p>
+  </div>
+
+  <!-- 特定商取引法 -->
+  <div class="section" id="legal">
+    <div class="container">
+      <h2 class="section-title">特定商取引法に基づく表記</h2>
+
+      <table class="legal-table">
+        <tr>
+          <th>販売事業者名</th>
+          <td>tomonary</td>
+        </tr>
+        <tr>
+          <th>運営責任者</th>
+          <td>齋藤 朋也</td>
+        </tr>
+        <tr>
+          <th>所在地</th>
+          <td>請求があった場合は遅滞なく開示いたします</td>
+        </tr>
+        <tr>
+          <th>電話番号</th>
+          <td>請求があった場合は遅滞なく開示いたします</td>
+        </tr>
+        <tr>
+          <th>メールアドレス</th>
+          <td><a href="mailto:tomonyal1224@gmail.com">tomonyal1224@gmail.com</a></td>
+        </tr>
+        <tr>
+          <th>販売価格</th>
+          <td>
+            【サブスクリプション（月額・税込）】<br>
+            ・ライトプラン：300円/月<br>
+            ・スタンダードプラン：600円/月<br>
+            ・プレミアムプラン：1,200円/月<br><br>
+            【コイン（都度購入・税込）】<br>
+            ・50枚：120円<br>
+            ・100枚：200円<br>
+            ・300枚：500円<br>
+            ・500枚：700円<br>
+            ・1,000枚：1,200円
+          </td>
+        </tr>
+        <tr>
+          <th>商品代金以外の<br>必要料金</th>
+          <td>なし（追加手数料はかかりません。ただし、インターネット接続に必要な通信料はお客様のご負担となります。）</td>
+        </tr>
+        <tr>
+          <th>お支払い方法</th>
+          <td>クレジットカード（Visa、Mastercard、JCB、American Express）</td>
+        </tr>
+        <tr>
+          <th>お支払い時期</th>
+          <td>
+            【サブスクリプション】契約開始時に初回決済、以降毎月自動決済<br>
+            【コイン購入】購入手続き完了時に即時決済
+          </td>
+        </tr>
+        <tr>
+          <th>商品の引渡し時期</th>
+          <td>決済完了後、ただちにアプリ内でご利用いただけます。</td>
+        </tr>
+        <tr>
+          <th>返品・交換・<br>キャンセル</th>
+          <td>
+            デジタルコンテンツの性質上、購入後の返品・返金は原則としてお受けしておりません。<br><br>
+            【サブスクリプション】いつでもアプリ内の設定画面から解約が可能です。解約後は現在の請求期間の終了までサービスをご利用いただけます。日割り返金は行いません。<br><br>
+            【コイン購入】購入後の返金はいたしかねます。<br><br>
+            サービスの不具合等により利用できなかった場合は、メールにてご連絡ください。個別に対応いたします。
+          </td>
+        </tr>
+        <tr>
+          <th>動作環境</th>
+          <td>iOS 16.0 以降を搭載した iPhone</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- フッター -->
+  <footer>
+    <div class="footer-links">
+      <a href="#features">機能</a>
+      <a href="#plans">料金</a>
+      <a href="#legal">特定商取引法</a>
+      <a href="mailto:tomonyal1224@gmail.com">お問い合わせ</a>
+    </div>
+    <p>&copy; 2026 tomonary — シュッピー AI家計簿アプリ</p>
+  </footer>
+
+</body>
+</html>
 </body>
 </html>
